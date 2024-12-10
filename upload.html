@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Save_Car</title>
+    <style>
+        /* General reset de márgenes y fuentes */
+        body, h2, button, input, img, video, select {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            box-sizing: border-box;
+        }
+
+        /* Fondo general */
+        body {
+            background-color: #050505;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* Estilo del contenedor */
+        .container {
+            max-width: 90%;
+            width: 100%;
+            background-color: rgb(44, 43, 43);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        /* Video responsivo */
+        #video, #photo {
+            width: 100%;
+            max-width: 640px;
+            height: auto;
+            margin: 20px auto;
+            border: 5px solid #ddd;
+            border-radius: 8px;
+        }
+
+        /* Botón de captura */
+        #captureButton {
+            padding: 12px 24px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+            margin: 20px 0;
+        }
+
+        #captureButton:hover {
+            background-color: #45a049;
+        }
+
+        /* Selector de cámara */
+        #cameraSelector {
+            margin: 10px 0 20px;
+            padding: 8px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        /* Formulario oculto */
+        form {
+            display: none;
+        }
+
+        /* Media queries para pantallas más pequeñas */
+        @media (max-width: 768px) {
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            #captureButton {
+                font-size: 0.9rem;
+                padding: 10px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h2 {
+                font-size: 1.2rem;
+            }
+
+            #captureButton {
+                font-size: 0.8rem;
+                padding: 8px 16px;
+            }
+
+            #video, #photo {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Verificar placa</h2>
+
+        <!-- Selector para elegir la cámara -->
+        <label for="cameraSelector" style="color: white;">Selecciona la camara:</label>
+        <select id="cameraSelector">
+            <option value="user">Frontal</option>
+            <option value="environment">Trasera</option>
+        </select>
+
+        <!-- Video de la cámara -->
+        <video id="video" autoplay></video>
+
+        <!-- Botón para tomar foto -->
+        <button id="captureButton">Tomar Foto</button>
+
+        <!-- Imagen capturada -->
+        <img id="photo" src="" alt="Foto capturada" style="display:none;"/>
+
+        <!-- Formulario para subir la foto -->
+        <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="photo_data" id="photoData">
+        </form>
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const captureButton = document.getElementById('captureButton');
+        const canvas = document.createElement('canvas');
+        const photo = document.getElementById('photo');
+        const photoDataInput = document.getElementById('photoData');
+        const uploadForm = document.getElementById('uploadForm');
+        const cameraSelector = document.getElementById('cameraSelector');
+
+        let stream = null;
+
+        function startCamera(facingMode) {
+            const constraints = {
+                video: { facingMode: { exact: facingMode } }
+            };
+
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+
+            navigator.mediaDevices.getUserMedia(constraints)
+                .then(newStream => {
+                    stream = newStream;
+                    video.srcObject = newStream;
+                })
+                .catch(error => {
+                    alert('No se pudo acceder a la cámara.');
+                    console.error(error);
+                });
+        }
+
+        cameraSelector.addEventListener('change', () => {
+            startCamera(cameraSelector.value);
+        });
+
+        startCamera('environment');
+
+        captureButton.addEventListener('click', () => {
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/jpeg');
+            photo.src = imageData;
+            photo.style.display = 'block';
+            photoDataInput.value = imageData;
+            uploadForm.submit();
+        });
+    </script>
+</body>
+</html>
+

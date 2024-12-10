@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario con Resultados</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0 20px; /* Espaciado para evitar recortes en dispositivos pequeños */
+            box-sizing: border-box;
+        }
+
+        h2 {
+            color: #ffffff;
+            text-align: center;
+            font-size: 24px; /* Tamaño más pequeño en pantallas pequeñas */
+            margin-bottom: 20px;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px; /* Ajuste de padding para pantallas pequeñas */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+
+        label {
+            font-size: 16px; /* Ajuste de fuente */
+            margin-bottom: 10px;
+            display: block;
+            color: #555;
+            text-align: left;
+            width: 100%;
+        }
+
+        input[type="text"] {
+            padding: 10px; /* Ajuste de padding */
+            margin: 10px 0;
+            width: 100%;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px; /* Ajuste de tamaño */
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px; /* Ajuste de padding */
+            font-size: 18px; /* Ajuste de fuente */
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+            width: 100%; /* Botón ancho en pantallas pequeñas */
+            max-width: 200px; /* Limitar tamaño en pantallas grandes */
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        /* Media Query para dispositivos más pequeños */
+        @media (max-width: 768px) {
+            h2 {
+                font-size: 20px;
+            }
+
+            form {
+                padding: 20px; /* Reducir padding */
+            }
+
+            input[type="text"], 
+            input[type="submit"] {
+                font-size: 14px; /* Reducir tamaño de fuente */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h2>Tu resultado</h2>
+
+        <form action="{{ url_for('index') }}" method="GET">
+            <label for="Lectura">Ultimo numero de placa:</label>
+            <input type="text" id="Lectura" name="Lectura" value="{{ Ultimo }}" disabled>
+
+            <label for="Tipo_num">El numero es:</label>
+            <input type="text" id="Tipo_num" name="Tipo_num" value="{{ tipo_num }}" disabled>
+
+            <input type="text" id="Tipo_num" name="Tipo_num" disabled>
+
+            <input type="submit" value="Volver">
+        </form>
+    </div>
+</body>
+</html>
+
+
